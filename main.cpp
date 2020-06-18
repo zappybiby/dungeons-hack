@@ -1,4 +1,4 @@
-#include "../External/Memory.hpp"
+#include "../External/Memory-Hacking-Class/Memory.hpp"
 #include <iostream>
 #include <windows.h>
 
