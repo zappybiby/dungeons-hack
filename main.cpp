@@ -1,4 +1,4 @@
-#include "../External/Memory.hpp"
+#include "../External/Memory-Hacking-Class/Memory.hpp"
 #include <iostream>
 #include <windows.h>
 
@@ -15,16 +15,16 @@ int main() {
     int PLAYER_HEALTH_OFFSET6 = 0x230;
     int PLAYER_HEALTH_OFFSET7 = 0xF0;
 
-    Memory Memory;
-    Memory.GetDebugPrivileges();
+    Memory mem;
+    mem.GetDebugPrivileges();
     const char* TARGET_PROCESS_NAME2 = TARGET_PROCESS_NAME.c_str();
-    DWORD processId = Memory.GetProcessId(TARGET_PROCESS_NAME2);
+    DWORD processId = mem.GetProcessId(TARGET_PROCESS_NAME2);
     HANDLE processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, processId);
 
-    long baseAddress = Memory.GetModuleBase(processHandle, TARGET_PROCESS_NAME);
+    long baseAddress = mem.GetModuleBase(processHandle, TARGET_PROCESS_NAME);
     std::cout << "Base address for module \"" << TARGET_PROCESS_NAME << "\" is " << baseAddress << " (in dec)..." << std::endl;
 
-    float playerOneHealth = Memory.ReadFloat(processHandle, baseAddress + PLAYER_HEALTH_BASE + PLAYER_HEALTH_OFFSET1 + PLAYER_HEALTH_OFFSET2 + PLAYER_HEALTH_OFFSET3 + PLAYER_HEALTH_OFFSET4 + PLAYER_HEALTH_OFFSET5 + PLAYER_HEALTH_OFFSET6 + PLAYER_HEALTH_OFFSET7);
+    float playerOneHealth = mem.ReadFloat(processHandle, baseAddress + PLAYER_HEALTH_BASE + PLAYER_HEALTH_OFFSET1 + PLAYER_HEALTH_OFFSET2 + PLAYER_HEALTH_OFFSET3 + PLAYER_HEALTH_OFFSET4 + PLAYER_HEALTH_OFFSET5 + PLAYER_HEALTH_OFFSET6 + PLAYER_HEALTH_OFFSET7);
 
     std::cout << "Player one has " << playerOneHealth << " health!" << std::endl;
 
