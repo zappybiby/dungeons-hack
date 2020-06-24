@@ -1,33 +1,48 @@
-#include "../External/Memory-Hacking-Class/Memory.hpp"
 #include <iostream>
-#include <windows.h>
+#include <vector>
+#include <Windows.h>
+#include "proc.cpp"
 
-int main() {
-    SetConsoleTitle("Memory Class Test");
-    std::string TARGET_PROCESS_NAME = "Dungeons-Win64-Shipping.exe";
+int main()
+{
+	//Get ProcId of the target process
+	DWORD procId = GetProcId(L"Dungeons-Win64-Shipping.exe");
 
-    int PLAYER_HEALTH_BASE = 0x03B0FED8;
-    int PLAYER_HEALTH_OFFSET1 = 0x830;
-    int PLAYER_HEALTH_OFFSET2 = 0x8;
-    int PLAYER_HEALTH_OFFSET3 = 0x1D0;
-    int PLAYER_HEALTH_OFFSET4 = 0x2A8;
-    int PLAYER_HEALTH_OFFSET5 = 0x310;
-    int PLAYER_HEALTH_OFFSET6 = 0x230;
-    int PLAYER_HEALTH_OFFSET7 = 0xF0;
+	//Base address of Process
+	uintptr_t moduleBase = GetModuleBaseAddress(procId, L"Dungeons-Win64-Shipping.exe");
 
-    Memory mem;
-    mem.GetDebugPrivileges();
-    const char* TARGET_PROCESS_NAME2 = TARGET_PROCESS_NAME.c_str();
-    DWORD processId = mem.GetProcessId(TARGET_PROCESS_NAME2);
-    HANDLE processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, processId);
+	//Get Handle to Process
+	HANDLE hProcess = 0;
+	hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, procId);
 
-    long baseAddress = mem.GetModuleBase(processHandle, TARGET_PROCESS_NAME);
-    std::cout << "Base address for module \"" << TARGET_PROCESS_NAME << "\" is " << baseAddress << " (in dec)..." << std::endl;
+	//Resolve base address of the pointer chain
+	uintptr_t dynamicPtrBaseAddr = moduleBase + 0x03D0A280;
 
-    float playerOneHealth = mem.ReadFloat(processHandle, baseAddress + PLAYER_HEALTH_BASE + PLAYER_HEALTH_OFFSET1 + PLAYER_HEALTH_OFFSET2 + PLAYER_HEALTH_OFFSET3 + PLAYER_HEALTH_OFFSET4 + PLAYER_HEALTH_OFFSET5 + PLAYER_HEALTH_OFFSET6 + PLAYER_HEALTH_OFFSET7);
+	std::cout << "DynamicPtrBaseAddr = " << "0x" << std::hex << dynamicPtrBaseAddr << std::endl;
 
-    std::cout << "Player one has " << playerOneHealth << " health!" << std::endl;
+	// offsets from dynamic pointer address
+	std::vector<unsigned int> healthOffsets = {0x0, 0x20, 0xE38, 0x310, 0x308, 0x230, 0xF0};
 
-    std::cin.get();
-    return 0;
+	// Find dynamic memory address
+	uintptr_t healthAddr = FindDMAAddy(hProcess, dynamicPtrBaseAddr, healthOffsets);
+
+	std::cout << "healthAddr = " << "0x" << std::hex << healthAddr << std::endl;
+
+	//Read Health Value
+	int healthValue = 0;
+
+	ReadProcessMemory(hProcess, (BYTE*)healthAddr, &healthValue, sizeof(healthValue), nullptr);
+	std::cout << "Current health = " << std::dec << healthValue << std::endl;
+
+	//Write to it
+	//int newAmmo = 1337;
+	//WriteProcessMemory(hProcess, (BYTE*)ammoAddr, &newAmmo, sizeof(newAmmo), nullptr);
+
+	////Read out again
+	//ReadProcessMemory(hProcess, (BYTE*)ammoAddr, &healthValue, sizeof(healthValue), nullptr);
+
+	//std::cout << "New ammo = " << std::dec << healthValue << std::endl;
+
+	getchar();
+	return 0;
 }
