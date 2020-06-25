@@ -15,22 +15,22 @@ int main()
 	const DWORD procId = GetProcId(L"Dungeons-Win64-Shipping.exe");
 
 	//Base address of Process
-	const uintptr_t moduleBase = GetModuleBaseAddress(procId, L"Dungeons-Win64-Shipping.exe");
+	const uintptr_t module_base = GetModuleBaseAddress(procId, L"Dungeons-Win64-Shipping.exe");
 
 	//Get Handle to Process
-	HANDLE hProcess = 0;
-	hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, procId);
+	HANDLE h_process = nullptr;
+	h_process = OpenProcess(PROCESS_ALL_ACCESS, NULL, procId);
 
 	//Resolve base address of the pointer chain
-	const uintptr_t dynamicPtrBaseAddr = moduleBase + 0x03D0A280;
+	const uintptr_t dynamicPtrBaseAddr = module_base + 0x03D0A280;
 
 	std::cout << "DynamicPtrBaseAddr = " << "0x" << std::hex << dynamicPtrBaseAddr << std::endl;
 
 	// Find dynamic memory address
-	const uintptr_t health_addr = FindDMAAddy(hProcess, dynamicPtrBaseAddr, health_offsets);
-	const uintptr_t z_addr = FindDMAAddy(hProcess, dynamicPtrBaseAddr, z_offsets);
-	const uintptr_t x_addr = FindDMAAddy(hProcess, dynamicPtrBaseAddr, x_offsets);
-	const uintptr_t y_addr = FindDMAAddy(hProcess, dynamicPtrBaseAddr, y_offsets);
+	const uintptr_t health_addr = FindDMAAddy(h_process, dynamicPtrBaseAddr, health_offsets);
+	const uintptr_t z_addr = FindDMAAddy(h_process, dynamicPtrBaseAddr, z_offsets);
+	const uintptr_t x_addr = FindDMAAddy(h_process, dynamicPtrBaseAddr, x_offsets);
+	const uintptr_t y_addr = FindDMAAddy(h_process, dynamicPtrBaseAddr, y_offsets);
 
 	std::cout << "health_addr = " << "0x" << std::hex << health_addr << std::endl;
 	std::cout << "z_addr = " << "0x" << std::hex << z_addr << std::endl;
@@ -44,10 +44,10 @@ int main()
 	float y_value = 0;
 	float z_value = 0;
 
-	ReadProcessMemory(hProcess, (BYTE*)health_addr, &healthValue, sizeof(healthValue), nullptr);
-	ReadProcessMemory(hProcess, (BYTE*)z_addr, &z_value, sizeof(z_value), nullptr);
-	ReadProcessMemory(hProcess, (BYTE*)x_addr, &x_value, sizeof(z_value), nullptr);
-	ReadProcessMemory(hProcess, (BYTE*)y_addr, &y_value, sizeof(z_value), nullptr);
+	ReadProcessMemory(h_process, (BYTE*)health_addr, &healthValue, sizeof(healthValue), nullptr);
+	ReadProcessMemory(h_process, (BYTE*)z_addr, &z_value, sizeof(z_value), nullptr);
+	ReadProcessMemory(h_process, (BYTE*)x_addr, &x_value, sizeof(z_value), nullptr);
+	ReadProcessMemory(h_process, (BYTE*)y_addr, &y_value, sizeof(z_value), nullptr);
 
 	std::cout << "Current health = " << std::dec << healthValue << std::endl;
 	std::cout << "Current z = " << std::fixed << z_value << std::endl;
@@ -56,14 +56,9 @@ int main()
 
 
 	//Write to it
-	//int newAmmo = 1337;
-	//WriteProcessMemory(hProcess, (BYTE*)ammoAddr, &newAmmo, sizeof(newAmmo), nullptr);
-
-	////Read out again
-	//ReadProcessMemory(hProcess, (BYTE*)ammoAddr, &healthValue, sizeof(healthValue), nullptr);
-
-	//std::cout << "New ammo = " << std::dec << healthValue << std::endl;
-
+	//float new_x = 72537.24219;
+	//WriteProcessMemory(h_process, (BYTE*)x_addr, &new_x, sizeof(new_x), nullptr);
+	
 	getchar();
 	return 0;
 }
