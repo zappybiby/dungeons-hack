@@ -13,10 +13,25 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{c70809ac-1c5c-4889-85a2-bf83d8770d70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dungeons">
+      <UniqueIdentifier>{df580918-2a78-43ee-8dc0-61d71edda55e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\proc.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="dungeons\Game.cpp">
+      <Filter>Source Files\dungeons</Filter>
+    </ClCompile>
+    <ClCompile Include="dungeons\Player.cpp">
+      <Filter>Source Files\dungeons</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

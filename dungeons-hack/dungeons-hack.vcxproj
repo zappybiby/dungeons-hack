@@ -139,7 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dungeons\Game.cpp" />
+    <ClCompile Include="dungeons\Player.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="utils\proc.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
